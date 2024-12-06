@@ -1,8 +1,10 @@
 ### Training 
  1. Download the training and testing dataset
  2. Generate image patches from full-size training images, run
- ```python generate_patches_dpdd.py```
- 3. To train StarIR for single-image defocus deblurring, run
+ ```
+ python generate_patches_dpdd.py
+ ```
+ 1. To train StarIR for single-image defocus deblurring, run
 ```
 cd StarIR
 CONFIG=Defocus_Deblurring/Options/DPDD-Single.yml python train_StarIR.py

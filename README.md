@@ -2,7 +2,7 @@
 
 
 
-<h2 align="center"> StarIR: Convolutional Image Restoration with Spatial-Frequency Fusion</h2>
+<h1 align="center"> StarIR: Convolutional Image Restoration with Spatial-Frequency Fusion</h1>
 
 <div align="center">
 
@@ -10,14 +10,13 @@ Yuning Cui, [Syed Waqas Zamir](https://scholar.google.ae/citations?hl=en&user=PO
 </div>
 
 
-:fire::fire::fire: We have released the code, cheers!
 
 
 :star: If StarIR is helpful for you, please help star this repo. Thanks! :hugs:
 
 ### <a name="update"></a>:new: News
 
-- **2024.12.06**: This repo is released :fire:
+- **2024.12.06**: :fire: This repo is released
 
 ### <a name="setup"></a> ⚙️ Setup
 
