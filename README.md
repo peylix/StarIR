@@ -14,16 +14,16 @@ Yuning Cui, [Syed Waqas Zamir](https://scholar.google.ae/citations?hl=en&user=PO
 
 :star: If StarIR is helpful for you, please help star this repo. Thanks! :hugs:
 
-### <a name="update"></a>:new: News
+## <a name="update"></a>:new: News
 
 - **2024.12.06**: :fire: This repo is released
 
-### <a name="setup"></a> ⚙️ Setup
+## <a name="setup"></a> ⚙️ Setup
 
 See [INSTALL.md](INSTALL.md) for the installation of dependencies required to run StarIR.
 
 
-### <a name="training"></a> :wrench: Training and Evaluation
+## <a name="training"></a> :wrench: Training and Evaluation
 
 Training and Testing instructions for Deraining, Dehazing, Desnowing, Motion deblurring, Defocus deblurring, Low-light enhancement, Low-light deblurring, and all-in-one tasks are provided in their respective directories. Here is a summary table containing hyperlinkes for easy navigation.
 
