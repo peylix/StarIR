@@ -4,10 +4,10 @@
 
 <h1 align="center"> StarIR: Convolutional Image Restoration with Spatial-Frequency Fusion</h1>
 
-<div align="center">
+<!-- <div align="center"> -->
 
-Yuning Cui, [Syed Waqas Zamir](https://scholar.google.ae/citations?hl=en&user=POoai-QAAAAJ), [Ming-Hsuan Yang](https://scholar.google.com.hk/citations?user=p9-ohHsAAAAJ&hl=zh-CN&oi=ao), [Alois Knoll](https://scholar.google.com.hk/citations?user=-CA8QgwAAAAJ&hl=zh-CN&oi=ao), [Fahad Shahbaz Khan](https://scholar.google.es/citations?user=zvaeYnUAAAAJ&hl=en), and [Salman Khan](https://scholar.google.com.hk/citations?user=M59O9lkAAAAJ&hl=zh-CN&oi=ao)
-</div>
+<!-- Yuning Cui, [Syed Waqas Zamir](https://scholar.google.ae/citations?hl=en&user=POoai-QAAAAJ), [Ming-Hsuan Yang](https://scholar.google.com.hk/citations?user=p9-ohHsAAAAJ&hl=zh-CN&oi=ao), [Alois Knoll](https://scholar.google.com.hk/citations?user=-CA8QgwAAAAJ&hl=zh-CN&oi=ao), [Fahad Shahbaz Khan](https://scholar.google.es/citations?user=zvaeYnUAAAAJ&hl=en), and [Salman Khan](https://scholar.google.com.hk/citations?user=M59O9lkAAAAJ&hl=zh-CN&oi=ao) -->
+<!-- </div> -->
 
 
 
@@ -16,7 +16,7 @@ Yuning Cui, [Syed Waqas Zamir](https://scholar.google.ae/citations?hl=en&user=PO
 
 ## <a name="update"></a>:new: News
 
-- **2024.12.06**: :fire: This repo is released
+- **2026.04.09**: :fire: This repo is released
 
 ## <a name="setup"></a> ⚙️ Setup
 
@@ -37,6 +37,8 @@ Training and Testing instructions for Deraining, Dehazing, Desnowing, Motion deb
 |Low-light enhancement|<h6 align="center">[Link](./Low_Light_Enhancement/)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1G372H3n_uMJDIpZNbAPfuUpJTxrw_pnp?usp=sharing), [百度网盘](https://pan.baidu.com/s/1ZZaqMPcbl_fn0hcTRUXVag?pwd=7eet)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1uFuYG0rLBQJJ9kDNT4D0uALwf-wx105b?usp=sharing), [百度网盘](https://pan.baidu.com/s/1rzMsAvIEaCOPPolL2YWf6Q?pwd=2g3g)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1-U-WO7EwvavprWrp3fsD1g1qmOjWIC8I?usp=sharing), [百度网盘](https://pan.baidu.com/s/1lWXRZ-kkQS9pb19Cro_Pag?pwd=nwj6)|
 |Low-light deblurring|<h6 align="center">[Link](./Low_Light_Deblurring/)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1hX4XxIxKO8zolLvXcE0djw4_t_rAyFzT?usp=sharing), [百度网盘](https://pan.baidu.com/s/1l4XhUPArdK5Ej0Y9Qqw6Ug?pwd=sd6n)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1gkeLOT-j-6GRgSkLm6D94d1c3cHCFBOk?usp=sharing), [百度网盘](https://pan.baidu.com/s/1Iq7TQ40gxFSvwUbw_Pi71Q?pwd=wyvj)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1MhUWdk_MlKm_yt3AK87DpCGqnNVHhdMZ?usp=sharing), [百度网盘](https://pan.baidu.com/s/1dygdnhwpyIcsLH564l68MQ?pwd=rb6k)|
 |All-in-one|<h6 align="center">[Link](./All_in_One/)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1h6GEHpVd2LlDY-Nzc_x-7Mvwcf67JiQs?usp=sharing), [百度网盘](https://pan.baidu.com/s/1S3FglvcUUqJMzWe98TyRMQ?pwd=4ssz)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1QFFw5_sMVRuKIYIg8cJDn74VUITmK9ia?usp=sharing), [百度网盘](https://pan.baidu.com/s/1wpOmCMKeTCv7Y34QUV5D0A?pwd=sxgi)</h6>|<h6 align="center">[All_in_One](./All_in_One/INSTALL.md), [百度网盘](./All_in_One/INSTALL.md)|
+|UHD|<h6 align="center">[Link]</h6>|<h6 align="center">[Google Drive], [百度网盘](https://pan.baidu.com/s/1YFdoP1KTOyOeBCjrKM7w4g?pwd=vy9x)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1Gu-ARXRppTvpS5m8vOXC-NqqrphAyDVP?usp=sharing), [百度网盘](https://pan.baidu.com/s/1iA_qv0H-H59CVuVOdfl7Xg?pwd=a5wy)</h6>||
+|CDD|<h6 align="center">[Link]</h6>|<h6 align="center">[Google Drive], [百度网盘](https://pan.baidu.com/s/1qJpLX-WvuDvGIAwtzLnzEw?pwd=vp1s)</h6>|<h6 align="center">[Google Drive](https://drive.google.com/drive/folders/1__RgTso64mHWNAKunFVEKWUreMUb9Bbx?usp=sharing), [百度网盘](https://pan.baidu.com/s/1E50jAtSGMbjAh9A2bLKTaA?pwd=juid)</h6>||
 
 ## <a name="inference"></a> 💫 Demo
 
@@ -61,7 +63,12 @@ For all-in-one demo, please refer to [All_in_One](./All_in_One/)
 Please cite us if our work is useful for your research.
 
 ```
-
+@article{cui2026starir,
+  title={StarIR: Convolutional Image Restoration With Spatial-Frequency Fusion},
+  author={Cui, Yuning and Zamir, Syed Waqas and Yang, Ming-Hsuan and Knoll, Alois and Khan, Fahad Shahbaz and Khan, Salman},
+  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year={2026}
+}
 
 ```
 
@@ -69,5 +76,4 @@ Please cite us if our work is useful for your research.
 
 Should you have any question, please contact yuning.cui@in.tum.de
 
-**Acknowledgment:** This code is based on the [BasicSR](https://github.com/XPixelGroup/BasicSR) toolbox, [Restormer](https://github.com/swz30/Restormer), [FFTformer](https://github.com/kkkls/FFTformer), and [PromptIR](https://github.com/va1shn9v/PromptIR).
 

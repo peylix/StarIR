@@ -13,6 +13,14 @@ cd StarIR
 CONFIG=Deraining/Options/SPAD.yml python train_StarIR.py
  ```
 
+on the DID dataset, run 
+```
+cd StarIR
+CONFIG=Deraining/Options/DID.yml python train_StarIR.py
+ ```
+
+
+
 on the Rain13k dataset, run
 
 ```

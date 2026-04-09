@@ -16,9 +16,9 @@ from net.model import StarIR
 
 
 class StarIRModel(pl.LightningModule):
-    def __init__(self, deblurtest=None):
+    def __init__(self):
         super().__init__()
-        self.net = StarIR(deblurtest=deblurtest)
+        self.net = StarIR()
         self.loss_fn  = nn.L1Loss()
     
     def forward(self,x):
@@ -170,7 +170,6 @@ if __name__ == '__main__':
         test_Derain_Dehaze(net, derain_set, task="dehaze")
 
     elif testopt.mode == 3:
-        net  = StarIRModel().load_from_checkpoint(ckpt_path, deblurtest=True).cuda()
         print('Start testing GOPRO...')
         deblur_base_path = testopt.gopro_path
         name = deblur_splits[0]
@@ -232,6 +231,13 @@ if __name__ == '__main__':
         print('Start testing SOTS...')
         test_Derain_Dehaze(net, derain_set, task="dehaze")
 
+        deblur_base_path = testopt.gopro_path
+        for name in deblur_splits:
+            print('Start testing GOPRO...')
+
+            testopt.gopro_path = os.path.join(deblur_base_path,name)
+            deblur_set = DerainDehazeDataset(testopt,addnoise=False,sigma=55, task='deblur')
+            test_Derain_Dehaze(net, deblur_set, task="deblur")
 
         enhance_base_path = testopt.enhance_path
         for name in enhance_splits:
@@ -240,13 +246,3 @@ if __name__ == '__main__':
             testopt.enhance_path = os.path.join(enhance_base_path,name)
             derain_set = DerainDehazeDataset(testopt,addnoise=False,sigma=55, task='enhance')
             test_Derain_Dehaze(net, derain_set, task="enhance")
-
-        net  = StarIRModel().load_from_checkpoint(ckpt_path, deblurtest=True).cuda()
-        net.eval()
-        deblur_base_path = testopt.gopro_path
-        for name in deblur_splits:
-            print('Start testing GOPRO...')
-
-            testopt.gopro_path = os.path.join(deblur_base_path, name)
-            deblur_set = DerainDehazeDataset(testopt,addnoise=False,sigma=55, task='deblur')
-            test_Derain_Dehaze(net, deblur_set, task="deblur")

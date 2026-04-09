@@ -23,7 +23,8 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--output_dir', default='./results/',
                     type=str, help='Directory for output')
-parser.add_argument('--data', default='AGAN', choices=['AGAN', 'SPAD', 'DID'], type=str, help='dataset')               
+parser.add_argument('--data', default='UHD-Blur', choices=['UHD-Blur', 'UHD-Haze', 'UHD-LL', 'UHD-Rain'],
+                    type=str, help='dataset')               
 parser.add_argument(
     '--opt', type=str, default='./Options/', help='Path to option YAML file.')
 parser.add_argument('--weights', default='./pretrained_models/',
@@ -77,7 +78,7 @@ output_dir = os.path.join(args.output_dir, args.data)
 if output_dir != '':
     os.makedirs(output_dir, exist_ok=True)
 
-input_dir = os.path.join(args.input_dir, args.data, 'test', 'rain')
+input_dir = os.path.join(args.input_dir, args.data, 'test2000', 'Snow')
 
 input_paths = natsorted(
     glob(os.path.join(input_dir, '*.png')) + glob(os.path.join(input_dir, '*.jpg')) + glob(os.path.join(input_dir, '*.tif')))

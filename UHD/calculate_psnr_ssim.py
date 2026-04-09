@@ -14,7 +14,7 @@ def main(args):
     """
     psnr_all = []
     ssim_all = []
-    gt_path = osp.join(args.gt, args.data, 'test', 'norain')
+    gt_path = osp.join(args.gt, args.data, 'test2000', 'Gt')
     restored_path = osp.join(args.restored, args.data)
     img_list_gt = sorted(list(scandir(gt_path, recursive=True, full_path=True)))
     img_list_restored = sorted(list(scandir(restored_path, recursive=True, full_path=True)))
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--gt', type=str, default='./Datasets/', help='Path to gt (Ground-Truth)')
     parser.add_argument('--restored', type=str, default='./results/', help='Path to restored images')
-    parser.add_argument('--data', default='AGAN', choices=['AGAN', 'SPAD', 'DID'], type=str, help='dataset')               
+    parser.add_argument('--data', default='UHD-Blur', choices=['UHD-Blur', 'UHD-Haze', 'UHD-LL', 'UHD-Rain'], type=str, help='dataset')
     parser.add_argument('--crop_border', type=int, default=0, help='Crop border for each side')
 
     parser.add_argument(

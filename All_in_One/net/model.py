@@ -4,72 +4,6 @@ import torch.nn.functional as F
 import numbers
 from einops import rearrange
 
-###########################################################
-####borrowed from 
-# Improving image restoration by revisiting global information aggregation
-# only used for deblurring tasks in channel attention unit
-
-train_size = (1,3,256,256)
-class AvgPool2d(nn.Module):
-    def __init__(self, kernel_size=None, base_size=None, auto_pad=True, fast_imp=False):
-        super().__init__()
-        self.kernel_size = kernel_size
-        self.base_size = base_size
-        self.auto_pad = auto_pad
-
-        # only used for fast implementation
-        self.fast_imp = fast_imp
-        self.rs = [5,4,3,2,1]
-        self.max_r1 = self.rs[0]
-        self.max_r2 = self.rs[0]
-    def extra_repr(self) -> str:
-        return 'kernel_size={}, base_size={}, stride={}, fast_imp={}'.format(
-            self.kernel_size, self.base_size, self.kernel_size, self.fast_imp
-        )
-           
-    def forward(self, x):
-        if self.kernel_size is None and self.base_size:
-            if isinstance(self.base_size, int):
-                self.base_size = (self.base_size, self.base_size)
-            self.kernel_size = list(self.base_size)
-            self.kernel_size[0] = x.shape[2]*self.base_size[0]//train_size[-2]
-            self.kernel_size[1] = x.shape[3]*self.base_size[1]//train_size[-1]
-            
-            # only used for fast implementation
-            self.max_r1 = max(1, self.rs[0]*x.shape[2]//train_size[-2])
-            self.max_r2 = max(1, self.rs[0]*x.shape[3]//train_size[-1])
-
-        if self.fast_imp:   # Non-equivalent implementation but faster
-            h, w = x.shape[2:]
-            if self.kernel_size[0]>=h and self.kernel_size[1]>=w:
-                out = F.adaptive_avg_pool2d(x,1)
-            else:
-                r1 = [r for r in self.rs if h%r==0][0]
-                r2 = [r for r in self.rs if w%r==0][0]
-                r1 = min(self.max_r1, r1)
-                r2 = min(self.max_r2, r2)
-                s = x[:,:,::r1, ::r2].cumsum(dim=-1).cumsum(dim=-2)
-                n, c, h, w = s.shape
-                k1, k2 = min(h-1, self.kernel_size[0]//r1), min(w-1, self.kernel_size[1]//r2)
-                out = (s[:,:,:-k1,:-k2]-s[:,:,:-k1,k2:]-s[:,:,k1:,:-k2]+s[:,:,k1:,k2:])/(k1*k2)
-                out = torch.nn.functional.interpolate(out, scale_factor=(r1,r2))
-        else:
-            n, c, h, w = x.shape
-            s = x.cumsum(dim=-1).cumsum(dim=-2)
-            s = torch.nn.functional.pad(s, (1,0,1,0)) # pad 0 for convenience
-            k1, k2 = min(h, self.kernel_size[0]), min(w, self.kernel_size[1])
-            s1, s2, s3, s4 = s[:,:,:-k1,:-k2],s[:,:,:-k1,k2:], s[:,:,k1:,:-k2], s[:,:,k1:,k2:]
-            out = s4+s1-s2-s3
-            out = out / (k1*k2)
-    
-        if self.auto_pad:
-            n, c, h, w = x.shape
-            _h, _w = out.shape[2:]
-            pad2d = ((w - _w)//2, (w - _w + 1)//2, (h - _h) // 2, (h - _h + 1) // 2)
-            out = torch.nn.functional.pad(out, pad2d, mode='replicate')
-        
-        return out
-#######################################################################
 
 
 def to_3d(x):
@@ -178,7 +112,7 @@ class SpatialOperation(nn.Module):
 ##########################################################################
 ## Star module
 class StarModule(nn.Module):
-    def __init__(self, dim, bias, deblurtest=None):
+    def __init__(self, dim, bias):
         super(StarModule, self).__init__()
 
         self.patch_size = 8
@@ -194,13 +128,8 @@ class StarModule(nn.Module):
 
         self.spatial = SpatialOperation(dim)
 
-        if deblurtest:
-            gap = AvgPool2d(base_size=80)
-        else:
-            gap = nn.AdaptiveAvgPool2d((1,1))
-
         self.plain_channel = nn.Sequential(
-            gap,
+            nn.AdaptiveAvgPool2d(1),
             nn.Conv2d(dim, dim, kernel_size=1, bias=bias)
         )
 
@@ -232,11 +161,11 @@ class StarModule(nn.Module):
 
 ##########################################################################
 class StarBlock(nn.Module):
-    def __init__(self, dim, ffn_expansion_factor=2.66, bias=False, LayerNorm_type='WithBias', deblurtest=None):
+    def __init__(self, dim, ffn_expansion_factor=2.66, bias=False, LayerNorm_type='WithBias'):
         super(StarBlock, self).__init__()
 
         self.norm1 = LayerNorm(dim, LayerNorm_type)
-        self.attn = StarModule(dim, bias, deblurtest=deblurtest)
+        self.attn = StarModule(dim, bias)
 
         self.norm2 = LayerNorm(dim, LayerNorm_type)
         self.ffn = DFFN(dim, ffn_expansion_factor, bias)
@@ -300,37 +229,36 @@ class Upsample(nn.Module):
 ##########################################################################
 ##---------- StarIR -----------------------
 class StarIR(nn.Module):
-    def __init__(self,
-                 inp_channels=3,
-                 out_channels=3,
-                 dim=48,
-                 num_blocks=[7,8,15],
-                 num_refinement_blocks=4,
-                 ffn_expansion_factor=3,
-                 bias=False,
-                 deblurtest = None,
-                 ):
+    def __init__(self, 
+        inp_channels=3, 
+        out_channels=3, 
+        dim = 48,
+        num_blocks = [3,3,7], 
+        num_refinement_blocks = 4,
+        ffn_expansion_factor = 3,
+        bias = False
+    ):
         super(StarIR, self).__init__()
         self.patch_embed = OverlapPatchEmbed(inp_channels, dim)
 
         self.encoder_level1 = nn.Sequential(*[
-            StarBlock(dim=dim, ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=dim, ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_blocks[0])])
 
         self.down1_2 = Downsample(dim)
 
         self.encoder_level2 = nn.Sequential(*[
-            StarBlock(dim=int(dim * 2 ** 1), ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=int(dim * 2 ** 1), ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_blocks[1])])
 
         self.down2_3 = Downsample(int(dim * 2 ** 1))
 
         self.encoder_level3 = nn.Sequential(*[
-            StarBlock(dim=int(dim * 2 ** 2), ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=int(dim * 2 ** 2), ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_blocks[2])])
 
         self.decoder_level3 = nn.Sequential(*[
-            StarBlock(dim=int(dim * 2 ** 2), ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=int(dim * 2 ** 2), ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_blocks[2])])
 
         self.up3_2 = Upsample(int(dim * 2 ** 2))
@@ -338,17 +266,17 @@ class StarIR(nn.Module):
         self.reduce_chan_level2 = nn.Conv2d(int(dim * 2 ** 2), int(dim * 2 ** 1), kernel_size=1, bias=bias)
 
         self.decoder_level2 = nn.Sequential(*[
-            StarBlock(dim=int(dim * 2 ** 1), ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=int(dim * 2 ** 1), ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_blocks[1])])
 
         self.up2_1 = Upsample(int(dim * 2 ** 1))
 
         self.decoder_level1 = nn.Sequential(*[
-            StarBlock(dim=int(dim), ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=int(dim), ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_blocks[0])])
 
         self.refinement = nn.Sequential(*[
-            StarBlock(dim=int(dim), ffn_expansion_factor=ffn_expansion_factor, bias=bias, deblurtest=deblurtest) 
+            StarBlock(dim=int(dim), ffn_expansion_factor=ffn_expansion_factor, bias=bias) 
             for i in range(num_refinement_blocks)])
 
         self.fuse2 = Fuse(dim * 2)
