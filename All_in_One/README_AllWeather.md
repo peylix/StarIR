@@ -61,6 +61,10 @@ python train_allweather.py --data_dir ~/autodl-tmp/allweather --num_gpus 1 --bat
 Useful flags:
 
 - `--epochs 150 --warmup_epochs 15 --lr 2e-4 --patch_size 128` (defaults, following the all-in-one recipe)
+- `--accumulate_grad_batches N` — gradient accumulation. The original recipe
+  trains with batch 16 per GPU on 2 GPUs (effective 32), which does not fit
+  on a single 24 GB card; use `--batch_size 8 --accumulate_grad_batches 4`
+  there to keep the effective batch at 32
 - `--ckpt_every 10` — periodic checkpoints in `--ckpt_dir` (default `ckpt/allweather`); `last.ckpt` is always kept
 - `--resume ckpt/allweather/last.ckpt` — resume training
 - `--num_gpus 2` — DDP across GPUs (batch size is per GPU)

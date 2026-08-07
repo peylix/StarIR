@@ -83,6 +83,9 @@ def main():
     parser.add_argument('--epochs', type=int, default=150)
     parser.add_argument('--warmup_epochs', type=int, default=15)
     parser.add_argument('--batch_size', type=int, default=16, help='batch size per GPU')
+    parser.add_argument('--accumulate_grad_batches', type=int, default=1,
+                        help='gradient accumulation steps; effective batch = '
+                             'batch_size * num_gpus * this')
     parser.add_argument('--lr', type=float, default=2e-4)
     parser.add_argument('--patch_size', type=int, default=128)
     parser.add_argument('--num_workers', type=int, default=16)
@@ -113,6 +116,7 @@ def main():
     model = AllWeatherModel(opt)
     trainer = pl.Trainer(max_epochs=opt.epochs, accelerator='gpu', devices=opt.num_gpus,
                          strategy='ddp_find_unused_parameters_true' if opt.num_gpus > 1 else 'auto',
+                         accumulate_grad_batches=opt.accumulate_grad_batches,
                          logger=logger, callbacks=[checkpoint_callback])
 
     trainer.fit(model=model, train_dataloaders=trainloader, ckpt_path=opt.resume)
